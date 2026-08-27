@@ -213,6 +213,7 @@ const DotGrid = ({
     };
 
     const onClick = e => {
+      if (!canvasRef.current) return;
       const rect = canvasRef.current.getBoundingClientRect();
       const cx = e.clientX - rect.left;
       const cy = e.clientY - rect.top;
@@ -242,11 +243,9 @@ const DotGrid = ({
 
     const throttledMove = throttle(onMove, 50);
     window.addEventListener('mousemove', throttledMove, { passive: true });
-    window.addEventListener('click', onClick);
 
     return () => {
       window.removeEventListener('mousemove', throttledMove);
-      window.removeEventListener('click', onClick);
     };
   }, [maxSpeed, speedTrigger, proximity, resistance, returnDuration, shockRadius, shockStrength]);
 
