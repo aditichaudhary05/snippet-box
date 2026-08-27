@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -14,6 +15,7 @@ const { notFoundHandler, errorHandler } = require('./middleware/error');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const isProduction = process.env.NODE_ENV === 'production';
 
 app.use(helmet());
 
@@ -57,11 +59,19 @@ app.use('/api/collections', collectionRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/stats', statsRoutes);
 
+if (isProduction) {
+  const clientBuildPath = path.join(__dirname, '..', 'client', 'dist');
+  app.use(express.static(clientBuildPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
+}
+
 app.use(notFoundHandler);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  if (process.env.NODE_ENV !== 'production') {
+  if (!isProduction) {
     console.log(`Server running on port ${PORT}`);
   }
 });
