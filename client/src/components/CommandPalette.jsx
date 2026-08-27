@@ -52,7 +52,7 @@ export default function CommandPalette() {
       case 'favorites': navigate('/app/favorites'); break;
       case 'tags': navigate('/app/tags'); break;
       case 'settings': navigate('/app/settings'); break;
-      case 'logout': logout(); navigate('/login'); break;
+      case 'logout': logout(); navigate('/'); break;
     }
   };
 

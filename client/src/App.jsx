@@ -9,13 +9,11 @@ import Landing from './pages/Landing';
 
 function ProtectedRoute({ children }) {
   const isAuthenticated = useStore(s => s.isAuthenticated);
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  return children;
-}
-
-function PublicRoute({ children }) {
-  const isAuthenticated = useStore(s => s.isAuthenticated);
-  if (isAuthenticated) return <Navigate to="/app" replace />;
+  const openAuthModal = useStore(s => s.openAuthModal);
+  if (!isAuthenticated) {
+    openAuthModal('login');
+    return <Navigate to="/" replace />;
+  }
   return children;
 }
 
@@ -53,8 +51,6 @@ export default function App() {
       />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-        <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
         <Route path="/app/*" element={<ProtectedRoute><AppLayout /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
